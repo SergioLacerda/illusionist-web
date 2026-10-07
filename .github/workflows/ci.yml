@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  landing:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/landing
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: web/landing/.nvmrc
+          cache: npm
+          cache-dependency-path: web/landing/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: landing-dist
+          path: web/landing/dist
+          if-no-files-found: error

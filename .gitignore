@@ -1,3 +1,21 @@
+base_strategist/
+
+# IA runtime
+.agents/
+.strategist/
+.analysis/
+.providence/
+generated/
+.codex/
+.claude/
+.cursor/
+.gemini/
+.vscode/
+CLAUDE.md
+GEMINI.md
+AGENTS.md
+.github/prompts/
+.github/copilot-instructions.md
 # Logs
 logs
 *.log
@@ -147,3 +165,4 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+.strategist/.compiled/
