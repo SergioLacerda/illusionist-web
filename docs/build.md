@@ -1,17 +1,17 @@
-# Building the landing
+# Building the surfaces
 
-The landing lives in `web/landing/` (Astro 7, React 19, TypeScript 6, Vitest 5, npm). It builds to static files that need no Node, Astro, React or npm to be hosted.
+The landing lives in `web/strategist/` (Astro 7, React 19, TypeScript 6, Vitest 5, npm). It builds to static files that need no Node, Astro, React or npm to be hosted.
 
 ## Requirements
 
-- Node `>=22.12.0` (declared in `web/landing/package.json`); `web/landing/.nvmrc` pins the current major (26), so `nvm use` in that folder selects it
+- Node `>=22.12.0` (declared in `web/strategist/package.json`); `web/strategist/.nvmrc` pins the current major (26), so `nvm use` in that folder selects it
 - npm, using the committed `package-lock.json`
 - Policy: always the latest stable stack, no fallbacks or backward-compatibility shims. The one exception is TypeScript, held at the newest version `astro check` supports (6.x); TypeScript 7.0 is rejected by `astro check`, and 7.1+ is reachable only through `@astrojs/ts-content-mapper`
 - On machines with several Node versions, make sure `node -v` reports `>=22.12.0` before `npm ci`; an old Node makes `npm ci` fail after clearing `node_modules/`
 
 ## Commands
 
-Run from `web/landing/`:
+Run from `web/strategist/`:
 
 | Purpose | Command |
 |---------|---------|
@@ -35,9 +35,13 @@ The same workflow is available from the repository root through `make/web.mk`:
 | Local preview | `make preview-site` |
 | Full CI-style web check | `make ci-web` |
 
+## RGB System surface
+
+`web/rgb-system/` is built the same way (Astro 7, TypeScript 6, Vitest 4, npm; Node `>=26 <27`, pinned by its `.nvmrc`). Commands run from `web/rgb-system/`: `npm ci`, `npm run lint`, `npm test` (coverage, 90% thresholds), `npm run build`. From the repository root: `make ci-rgb`, `make build-rgb`, `make check-rgb`, `make test-rgb`. It needs no Go, no RGB CLI and no RGB repository. The same `ILLUSIONIST_SITE` and `ILLUSIONIST_BASE` inputs apply; its release uses `https://sergiolacerda.github.io` and `/rpg-system-rgb`.
+
 ## Output
 
-`npm run build` writes static files to `web/landing/dist/` (`index.html`, `pragmatic/`, `epic/`, `fonts/`, `_assets/`, `robots.txt`). Serve that directory with any static server.
+`npm run build` writes static files to `web/strategist/dist/` (`index.html`, `pragmatic/`, `epic/`, `fonts/`, `_assets/`, `robots.txt`). Serve that directory with any static server.
 
 ## Deployment-specific note
 

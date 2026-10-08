@@ -2,7 +2,7 @@
 
 ILUSIONISTA publishes its landing as a versioned, immutable static archive. A consumer depends on a release, never on `main`, the latest commit or the latest successful workflow run.
 
-This document describes the contract implemented by `.github/workflows/release.yml`.
+This document describes the contract implemented by `.github/workflows/release.yml` (Strategist surface, tags `vX.Y.Z`) and `.github/workflows/release-rgb.yml` (RGB System surface, tags `rgb-vX.Y.Z`). Each surface is released independently: its own workflow, tag stream, version guard (tag against its own `package.json`), archive name and checksum. A tag of one stream never triggers the other workflow.
 
 ## Artifacts
 
@@ -10,10 +10,10 @@ Each release `vX.Y.Z` (SemVer; `v0.x.y` while the contract is being discovered) 
 
 | File | Purpose |
 |------|---------|
-| `illusionist-strategist-surface-vX.Y.Z.tar.gz` | The static output of `web/landing` |
+| `illusionist-strategist-surface-vX.Y.Z.tar.gz` | The static output of `web/strategist` |
 | `illusionist-strategist-surface-vX.Y.Z.tar.gz.sha256` | SHA-256 of the archive above, calculated over the final archive |
 
-The archive entries sit at the archive root. There is no `web/landing/dist` prefix:
+The archive entries sit at the archive root. There is no `web/strategist/dist` prefix:
 
 ```text
 index.html
@@ -24,7 +24,11 @@ _assets/
 robots.txt
 ```
 
-The version in the file name is the release tag without the leading `v`, and it equals `version` in `web/landing/package.json`.
+The version in the file name is the release tag without the leading `v`, and it equals `version` in `web/strategist/package.json`.
+
+## RGB System release
+
+Tag `rgb-vX.Y.Z` (equal to `version` in `web/rgb-system/package.json`) publishes `illusionist-rgb-surface-vX.Y.Z.tar.gz` and its `.sha256`, built with `ILLUSIONIST_SITE=https://sergiolacerda.github.io` and `ILLUSIONIST_BASE=/rpg-system-rgb`. The archive layout rules, consumption steps and acceptance below apply with that prefix. It contains the presentation only: RGB adds its generated Library (`/library/`) and downloads (`/downloads/`) when it composes its site.
 
 ## Consuming a release
 
@@ -54,7 +58,7 @@ A release is accepted on properties of the artifact: the checksum verifies, the 
 
 ## Cutting a release (maintainer)
 
-1. Set `version` in `web/landing/package.json` to the new version and merge it.
+1. Set `version` in `web/strategist/package.json` to the new version and merge it.
 2. Push the tag `vX.Y.Z` that equals that version. The release workflow fails when they differ.
 3. The workflow runs the type check, the tests and the build, then packages the output, writes the checksum and creates the GitHub Release with both files attached. Nothing is published if an earlier step fails.
 4. Never move or reuse a tag. A bad release is superseded by a new patch version.

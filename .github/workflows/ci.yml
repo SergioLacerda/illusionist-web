@@ -9,24 +9,46 @@ permissions:
   contents: read
 
 jobs:
-  landing:
+  strategist:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: web/landing
+        working-directory: web/strategist
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: web/landing/.nvmrc
+          node-version-file: web/strategist/.nvmrc
           cache: npm
-          cache-dependency-path: web/landing/package-lock.json
+          cache-dependency-path: web/strategist/package-lock.json
       - run: npm ci
       - run: npm run lint
       - run: npm test
       - run: npm run build
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: landing-dist
-          path: web/landing/dist
+          name: strategist-dist
+          path: web/strategist/dist
+          if-no-files-found: error
+
+  rgb-system:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/rgb-system
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/rgb-system/.nvmrc
+          cache: npm
+          cache-dependency-path: web/rgb-system/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rgb-system-dist
+          path: web/rgb-system/dist
           if-no-files-found: error
