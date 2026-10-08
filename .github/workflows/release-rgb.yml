@@ -1,8 +1,8 @@
-name: Release
+name: Release RGB
 
 on:
   push:
-    tags: ['v*']
+    tags: ['rgb-v*']
 
 permissions:
   contents: read
@@ -14,24 +14,24 @@ jobs:
       contents: write
     defaults:
       run:
-        working-directory: web/strategist
+        working-directory: web/rgb-system
     env:
-      SURFACE_NAME: illusionist-strategist-surface
-      # The release is compiled for its target consumer (the Strategist).
+      SURFACE_NAME: illusionist-rgb-surface
+      # The release is compiled for its target consumer (the RGB System page).
       ILLUSIONIST_SITE: https://sergiolacerda.github.io
-      ILLUSIONIST_BASE: /strategist-skill
+      ILLUSIONIST_BASE: /rpg-system-rgb
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: web/strategist/.nvmrc
+          node-version-file: web/rgb-system/.nvmrc
           cache: npm
-          cache-dependency-path: web/strategist/package-lock.json
+          cache-dependency-path: web/rgb-system/package-lock.json
       - name: Tag must match the package version
         run: |
           version="$(node -p "require('./package.json').version")"
-          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
-            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
+          if [ "${GITHUB_REF_NAME}" != "rgb-v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version rgb-v${version}"
             exit 1
           fi
       - run: npm ci
@@ -40,7 +40,7 @@ jobs:
       - run: npm run build
       - name: Package the static output
         run: |
-          archive="${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz"
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#rgb-}.tar.gz"
           mkdir -p "$GITHUB_WORKSPACE/release"
           epoch="$(git log -1 --format=%ct)"
           (cd dist && find . -mindepth 1 -printf '%P\n' | LC_ALL=C sort) > "$RUNNER_TEMP/entries.txt"
@@ -54,7 +54,7 @@ jobs:
       - name: Write the checksum
         working-directory: release
         run: |
-          archive="${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz"
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#rgb-}.tar.gz"
           sha256sum "${archive}" > "${archive}.sha256"
           sha256sum -c "${archive}.sha256"
       - name: Create the GitHub Release
@@ -62,7 +62,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#rgb-}.tar.gz"
           gh release create "${GITHUB_REF_NAME}" \
-            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz" \
-            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz.sha256" \
+            "${archive}" "${archive}.sha256" \
             --title "${GITHUB_REF_NAME}" --generate-notes --verify-tag

@@ -1,6 +1,6 @@
 # ILUSIONISTA (illusionist-web)
 
-Builds, tests and packages static web surfaces for products. The first real case is the Strategist landing page, kept in `web/landing/`.
+Builds, tests and packages static web surfaces for products. Two real surfaces exist today: the Strategist landing page in `web/strategist/` and the RGB System landing page in `web/rgb-system/`. Each is built, tested and released independently.
 
 > ILUSIONISTA owns presentation production. Products own their domain-specific capabilities, site composition and deployment.
 
@@ -8,16 +8,21 @@ Builds, tests and packages static web surfaces for products. The first real case
 
 | Path | Purpose |
 |------|---------|
-| `web/landing/` | Landing source (Astro 7, React 19, TypeScript 6, Vitest 5, npm), three routes: `/`, `pragmatic/`, `epic/` |
+| `web/strategist/` | Landing source (Astro 7, React 19, TypeScript 6, Vitest 5, npm), three routes: `/`, `pragmatic/`, `epic/` |
+| `web/rgb-system/` | RGB System landing source (Astro 7, TypeScript 6, Vitest 4, npm), pt-BR/en routes under `/pt-br/` and `/en/`. Library presentation is self-contained here |
 | `docs/build.md` | Install, check, test, build and preview commands |
-| `.github/workflows/ci.yml` | CI: `npm ci`, lint, tests and build on the Node pinned in `.nvmrc` |
+| `docs/architecture/rgb-migration-report.md` | RGB migration report (baseline, classification, decisions) |
+| `docs/architecture/rgb-composition-design.md` | How RGB composes its site from the RGB surface archive (design only) |
+| `.github/workflows/ci.yml` | CI: one job per surface (`npm ci`, lint, tests, build on the Node pinned in its `.nvmrc`) |
+| `.github/workflows/release.yml` | Strategist release, tags `vX.Y.Z` |
+| `.github/workflows/release-rgb.yml` | RGB System release, tags `rgb-vX.Y.Z` |
 
 ## Quick start
 
-Requires Node 26 (`web/landing/.nvmrc`; minimum 22.12).
+Requires Node 26 (`.nvmrc` of each surface; the Strategist minimum is 22.12, RGB System declares `>=26 <27`).
 
 ```bash
-cd web/landing
+cd web/strategist
 npm ci
 npm run build     # static output in dist/
 npm run preview   # http://localhost:4321/

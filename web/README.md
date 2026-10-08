@@ -1,17 +1,18 @@
 # web/
 
-Static web surfaces built by ILUSIONISTA. Today it holds one surface: the Strategist landing.
+Static web surfaces built by ILUSIONISTA. Today it holds two independent surfaces: the Strategist landing and the RGB System landing.
 
 ## Structure
 
 ```
 web/
-└── landing/    ← production site (Astro static output)
+├── strategist/    ← Strategist landing (Astro + React islands, static output)
+└── rgb-system/    ← RGB System landing (Astro, pt-BR/en, static output)
 ```
 
-The Strategist design system prototypes that used to live in `web/design/` were moved out of this tree to `base_strategist/` at the repository root (git-ignored). `web/landing` has no references to it.
+The Strategist design system prototypes that used to live in `web/design/` were moved out of this tree to `base_strategist/` at the repository root (git-ignored). `web/strategist` has no references to it.
 
-## landing/
+## strategist/
 
 Astro static site with minimal React islands (tabs, language toggle, copy button, features and mission panels):
 
@@ -22,7 +23,7 @@ Astro static site with minimal React islands (tabs, language toggle, copy button
 ### Dev
 
 ```bash
-cd web/landing
+cd web/strategist
 npm ci
 npm run dev       # localhost:4321
 ```
@@ -30,8 +31,8 @@ npm run dev       # localhost:4321
 ### Build
 
 ```bash
-cd web/landing
-npm run build     # → web/landing/dist/
+cd web/strategist
+npm run build     # → web/strategist/dist/
 npm run preview   # preview of the static build
 ```
 
@@ -73,3 +74,22 @@ Fonts (`src/styles/tokens/fonts.css`) use `/fonts/...` and the pages build `og:u
 - `src/config/consumer.ts`: repository, quickstart, license, releases and install URLs
 - `src/config/storage.ts`: `localStorage` keys and cross-island event names (kept as shipped so stored visitor preferences keep working)
 - `src/data/*.ts`: Strategist product content
+
+## rgb-system/
+
+Astro static site (no React) replicated from the RGB System landing at `SergioLacerda/rpg-system-rgb` commit `812b4fddc158db8b9bbc6c3e6f2f451ffbe118ae`. See [docs/architecture/rgb-migration-report.md](../docs/architecture/rgb-migration-report.md).
+
+- routes: `/` (redirect to `/pt-br/`), `/pt-br/` and `/en/` with `instalacao/`, `skills/` and `library/`
+- the Library routes (`src/pages/[lang]/library/`, `src/content/library/`) are self-contained in this project and are not shared with the Strategist surface
+- RGB owns and produces the generated Library (`/library/`), PDFs, Skill packages and their manifests; the page only links to them (`/library/` and `/downloads/...` are composition requirements and do not exist in this build)
+- tests: Vitest 4 with 90% thresholds (`npm test` runs coverage)
+
+```bash
+cd web/rgb-system
+npm ci
+npm run lint
+npm test
+ILLUSIONIST_SITE=https://sergiolacerda.github.io ILLUSIONIST_BASE=/rpg-system-rgb npm run build
+```
+
+`site` and `base` follow the same `ILLUSIONIST_SITE` / `ILLUSIONIST_BASE` contract as the Strategist surface (`src/config/deployment.ts`). With neither set the build is neutral (base `/`).
