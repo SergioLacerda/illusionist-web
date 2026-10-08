@@ -53,14 +53,20 @@ See [docs/build.md](../docs/build.md) for requirements and the full command list
 
 ### Base path and custom domain
 
-`astro.config.mjs` is configured for the Strategist GitHub Pages deployment:
+Deployment values are build-time inputs read by `astro.config.mjs` through `src/config/deployment.ts`:
 
-```js
-site: 'https://sergiolacerda.github.io',
-base: '/strategist-skill',
+| Variable | Meaning | Default |
+|----------|---------|---------|
+| `ILLUSIONIST_SITE` | Absolute `http(s)` origin of the deployment | unset: no `og:url` and no canonical link |
+| `ILLUSIONIST_BASE` | Path the surface is served under, such as `/docs` | `/` |
+
+With neither set the build is neutral and is meant to be served from the root of a host. A consumer that publishes under a subpath, or wants `og:url` and canonical links, builds its own variant, for example:
+
+```bash
+ILLUSIONIST_SITE=https://example.org ILLUSIONIST_BASE=/docs npm run build
 ```
 
-Fonts (`src/styles/tokens/fonts.css`) use `/fonts/...` and the pages build `og:url` from `Astro.site` plus `BASE_URL`, so the config is the only place to change. For a custom domain without a subpath, remove `base` (or set `base: '/'`) and update `site`.
+Fonts (`src/styles/tokens/fonts.css`) use `/fonts/...` and the pages build `og:url` and canonical from `Astro.site` plus `BASE_URL`, so these two variables are the only place to change. Invalid values fail the build. On Windows with Git Bash, prefix the command with `MSYS_NO_PATHCONV=1`, otherwise the shell rewrites `/docs` into a Windows path (the build rejects it).
 
 ### Consumer-specific values
 

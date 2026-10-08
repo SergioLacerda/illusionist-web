@@ -16,6 +16,7 @@ import { MISSION_ROUTES } from '../data/architecture';
 import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const pageUrl = Astro.site ? new URL(`${base}epic/`, Astro.site).href : undefined;
 const quickstart = consumer.quickstartUrl;
 ---
 <!DOCTYPE html>
@@ -26,6 +27,8 @@ const quickstart = consumer.quickstartUrl;
   <title>Strategist · Governed AI Mission Orchestrator</title>
   <meta name="description" content="Strategist is an AI orchestration skill that turns requests into governed missions: discovery, refinement, Approval Gate, documentation materialization, and executor-ready handoff." />
   <meta name="theme-color" content="#14100a" />
+  {pageUrl && <meta property="og:url" content={pageUrl} />}
+  {pageUrl && <link rel="canonical" href={pageUrl} />}
 </head>
 <body>
 <div class="stage"><div class="app crt" id="app">

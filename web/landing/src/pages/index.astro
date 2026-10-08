@@ -1,6 +1,6 @@
 ---
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const pageUrl = new URL(base, Astro.site).href;
+const pageUrl = Astro.site ? new URL(base, Astro.site).href : undefined;
 import Footer from '../components/Footer.astro';
 ---
 <!DOCTYPE html>
@@ -14,7 +14,8 @@ import Footer from '../components/Footer.astro';
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Strategist · Escolha sua jornada" />
 <meta property="og:description" content="Strategist — escolha sua jornada: modo pragmático (guia técnico direto) ou modo épico (a experiência narrativa completa)." />
-<meta property="og:url" content={pageUrl} />
+{pageUrl && <meta property="og:url" content={pageUrl} />}
+{pageUrl && <link rel="canonical" href={pageUrl} />}
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

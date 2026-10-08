@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: web/landing
+    env:
+      SURFACE_NAME: illusionist-strategist-surface
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/landing/.nvmrc
+          cache: npm
+          cache-dependency-path: web/landing/package-lock.json
+      - name: Tag must match the package version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: Package the static output
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz"
+          mkdir -p "$GITHUB_WORKSPACE/release"
+          epoch="$(git log -1 --format=%ct)"
+          (cd dist && find . -mindepth 1 -printf '%P\n' | LC_ALL=C sort) > "$RUNNER_TEMP/entries.txt"
+          tar -C dist --no-recursion -T "$RUNNER_TEMP/entries.txt" \
+            --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner -cf - \
+            | gzip -n > "$GITHUB_WORKSPACE/release/${archive}"
+          if tar -tzf "$GITHUB_WORKSPACE/release/${archive}" | grep -qE '^(\./|/|web/)'; then
+            echo "::error::archive entries must sit at the archive root"
+            exit 1
+          fi
+      - name: Write the checksum
+        working-directory: release
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz"
+          sha256sum "${archive}" > "${archive}.sha256"
+          sha256sum -c "${archive}.sha256"
+      - name: Create the GitHub Release
+        working-directory: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz" \
+            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz.sha256" \
+            --title "${GITHUB_REF_NAME}" --generate-notes --verify-tag

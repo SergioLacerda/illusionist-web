@@ -14,6 +14,27 @@ const pages = [
   'src/pages/epic.astro',
 ] as const;
 
+describe('landing canonical metadata', () => {
+  it.each(pages)('%s declares a canonical link equal to its og:url', (page) => {
+    const source = readPage(page);
+    expect(source).toContain('<link rel="canonical" href={pageUrl} />');
+    expect(source).toContain('<meta property="og:url" content={pageUrl} />');
+  });
+
+  it.each(pages)('%s emits og:url and canonical only when a site is configured', (page) => {
+    const source = readPage(page);
+    expect(source).toContain('Astro.site ? new URL(');
+    expect(source).toContain('{pageUrl && <meta property="og:url" content={pageUrl} />}');
+    expect(source).toContain('{pageUrl && <link rel="canonical" href={pageUrl} />}');
+  });
+
+  it('epic page builds its URL from site and base', () => {
+    expect(readPage('src/pages/epic.astro')).toContain(
+      'const pageUrl = Astro.site ? new URL(`${base}epic/`, Astro.site).href : undefined;',
+    );
+  });
+});
+
 describe('landing documentation-only copy', () => {
   it.each(pages)('%s does not promise code implementation by Strategist', (page) => {
     const source = readPage(page).toLowerCase();

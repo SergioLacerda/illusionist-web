@@ -20,11 +20,11 @@ Requires Node 26 (`web/landing/.nvmrc`; minimum 22.12).
 cd web/landing
 npm ci
 npm run build     # static output in dist/
-npm run preview   # http://localhost:4321/strategist-skill
+npm run preview   # http://localhost:4321/
 ```
 
 The output in `dist/` is plain static files and needs no Node runtime to be hosted. See [docs/build.md](docs/build.md) for all commands.
 
 ## Status
 
-v0: the Strategist landing was extracted as-is and made independent of the Strategist repository. The current `site` and `base` in `web/landing/astro.config.mjs` still belong to the Strategist GitHub Pages deployment. No universal abstraction has been introduced yet; the architecture is meant to emerge from real consumers.
+v0: the Strategist landing was extracted as-is and made independent of the Strategist repository. `site` and `base` are build-time inputs (`ILLUSIONIST_SITE`, `ILLUSIONIST_BASE`) with a neutral default, so no consumer deployment value is baked into the source or into a release. No universal abstraction has been introduced yet; the architecture is meant to emerge from real consumers.

@@ -2,7 +2,7 @@
 import { consumer } from '../config/consumer';
 import Logo from '../components/Logo.astro';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const pageUrl = new URL(`${base}pragmatic/`, Astro.site).href;
+const pageUrl = Astro.site ? new URL(`${base}pragmatic/`, Astro.site).href : undefined;
 import Footer from '../components/Footer.astro';
 ---
 <!DOCTYPE html>
@@ -16,7 +16,8 @@ import Footer from '../components/Footer.astro';
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Strategist · From vague demand to approved handoff" />
 <meta property="og:description" content="Strategist produces governed analysis, approved documentation, and executor-ready handoffs — Approval Gate required before materialization." />
-<meta property="og:url" content={pageUrl} />
+{pageUrl && <meta property="og:url" content={pageUrl} />}
+{pageUrl && <link rel="canonical" href={pageUrl} />}
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
