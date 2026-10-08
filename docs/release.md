@@ -2,7 +2,7 @@
 
 ILUSIONISTA publishes its landing as a versioned, immutable static archive. A consumer depends on a release, never on `main`, the latest commit or the latest successful workflow run.
 
-This document describes the contract. It is written before the release workflow exists; the maintainer checks it against the working workflow when the first release is cut.
+This document describes the contract implemented by `.github/workflows/release.yml`.
 
 ## Artifacts
 
@@ -42,15 +42,15 @@ The version in the file name is the release tag without the leading `v`, and it 
    mkdir site && tar -xzf illusionist-strategist-surface-vX.Y.Z.tar.gz -C site
    ```
 
-4. **Publish** the extracted directory with any static host. No Node, Astro, React or npm is needed.
+4. **Publish** the extracted directory with any static host, so that it answers under `/strategist-skill/` (see [Deployment values](#deployment-values)). No Node, Astro, React or npm is needed.
 
 ## Deployment values
 
-The released build is generic: it uses the neutral default `site` and `base` (`base` is `/`), so it works when published at the root of a host. A consumer that publishes under a subpath, or needs its own `site`, builds its own variant from the tagged source by passing its own `site` and `base` values at build time (see [build.md](build.md)). A prebuilt tree cannot serve two different base paths.
+The source is deployment-independent, but the released build is compiled for its target consumer. The release workflow sets `ILLUSIONIST_SITE=https://sergiolacerda.github.io` and `ILLUSIONIST_BASE=/strategist-skill`, so the archive is meant to be served under `https://sergiolacerda.github.io/strategist-skill/`, with asset paths, `canonical` and `og:url` built from those two values. The consumer does not rebuild it. A prebuilt tree cannot serve two different base paths: served at the root of a host, its assets do not resolve. Another consumer builds its own variant from the tagged source by passing its own `site` and `base` at build time (see [build.md](build.md)).
 
 ## Acceptance
 
-This project accepts a release on properties of the artifact alone: the checksum verifies, the archive layout matches the contract above, and the extracted tree serves the expected pages from the root of a static host without any consumer-specific deployment value. Whether a release is equivalent to a consumer's existing site is that consumer's own acceptance gate and is verified in the consumer's repository.
+A release is accepted on properties of the artifact: the checksum verifies, the archive layout matches the contract above, and the extracted tree, served under `/strategist-skill/`, answers the expected pages, loads its assets from that prefix and carries canonical and `og:url` values that start with `https://sergiolacerda.github.io/strategist-skill/`. The consumer pins the exact version it publishes and never uses `latest`, `main` or a workflow run.
 
 ## Cutting a release (maintainer)
 
