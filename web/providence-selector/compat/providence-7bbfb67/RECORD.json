@@ -10,8 +10,8 @@
   },
   "payload": {
     "file": "data.json",
-    "sha256": "c77076ba5c998b1a8469a6487e7c0bd48a238f5e97054b87b1d3c85bb0f1e7c6",
-    "bytes": 16996,
+    "sha256": "bdedea2d9b307a7361d7a0dda6738e5f4a923da0f73ad21916797ea3eb2e937c",
+    "bytes": 16523,
     "items": 39,
     "mandates": 16,
     "guidelines": 23,
@@ -25,7 +25,8 @@
       "performance"
     ],
     "generatedAt": "2026-10-09T01:12:25+00:00",
-    "generationContext": "SelectorCompiler.build_payload() run with Python 3.14.8 on a git archive of the pinned commit extracted to a temporary directory (.providence, providence_wizard, docs/spec); nothing in the Providence checkout was modified"
+    "generationContext": "SelectorCompiler.build_payload() run with Python 3.14.8 on a git archive of the pinned commit extracted to a temporary directory (.providence, providence_wizard, docs/spec); nothing in the Providence checkout was modified",
+    "note": "Hash and size are of the LF-normalized file; compat/.gitattributes keeps it LF on every platform."
   },
   "contract": {
     "version": "1.0"
