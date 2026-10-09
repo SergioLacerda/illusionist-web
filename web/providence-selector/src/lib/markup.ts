@@ -1,0 +1,31 @@
+/**
+ * Static markup of the Selector page body. Kept in one place so the page and
+ * the UI tests render exactly the same structure (ids and classes are the
+ * baseline's; the stylesheet depends on them).
+ */
+export const APP_MARKUP = `<main class="app">
+    <header class="hero">
+      <svg class="brand-mark" viewBox="0 0 96 96" width="56" height="56" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="88" height="88" rx="20" fill="#4453bd"/>
+        <path d="M34 26 H26 a4 4 0 0 0 -4 4 V66 a4 4 0 0 0 4 4 H34" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.55"/>
+        <path d="M62 26 H70 a4 4 0 0 1 4 4 V66 a4 4 0 0 1 -4 4 H62" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.55"/>
+        <path d="M38 49 L45 57 L59 39" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <h1>SDD Selector</h1>
+      <p>Select governed items and export a JSON artifact.</p>
+    </header>
+    <section class="controls">
+      <input id="search" type="search" placeholder="Search items">
+      <div id="filters" class="filters"></div>
+    </section>
+    <section id="warnings" class="warnings hidden"></section>
+    <section id="status" class="status hidden"></section>
+    <section id="items" class="grid"></section>
+    <footer class="actions">
+      <span id="summary">0 selected</span>
+      <button id="export" type="button">Export JSON</button>
+      <button id="import" type="button">Import JSON</button>
+      <button id="clear" type="button">Clear</button>
+      <input id="import-file" type="file" accept="application/json" class="hidden">
+    </footer>
+  </main>`;

@@ -1,0 +1,5 @@
+{
+  "documents": [
+    { "id": "M001", "path": "docs/m001.md", "title": "Clean Architecture" }
+  ]
+}

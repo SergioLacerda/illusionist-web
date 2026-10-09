@@ -39,6 +39,14 @@ The same workflow is available from the repository root through `make/web.mk`:
 
 `web/rgb-system/` is built the same way (Astro 7, TypeScript 6, Vitest 4, npm; Node `>=26 <27`, pinned by its `.nvmrc`). Commands run from `web/rgb-system/`: `npm ci`, `npm run lint`, `npm test` (coverage, 90% thresholds), `npm run build`. From the repository root: `make ci-rgb`, `make build-rgb`, `make check-rgb`, `make test-rgb`. It needs no Go, no RGB CLI and no RGB repository. The same `ILLUSIONIST_SITE` and `ILLUSIONIST_BASE` inputs apply; its release uses `https://sergiolacerda.github.io` and `/rpg-system-rgb`.
 
+## Providence surface
+
+`web/providence/` is built the same way (Astro 7, React 19, TypeScript 6, Vitest 5, npm; Node pinned by its `.nvmrc`). Commands run from `web/providence/`: `npm ci`, `npm run lint`, `npm run cover` (coverage, 90% thresholds), `npm run build`, then `node scripts/check-surface.mjs dist /providence` (structural gate). From the repository root: `make ci-providence`, `make build-providence`, `make gate-providence`. It needs no Python, `uv`, MkDocs, Selector compiler or Providence workspace. Its release uses `https://sergiolacerda.github.io` and `/providence`.
+
+## Providence Selector surface
+
+`web/providence-selector/` follows the same commands as the other surfaces (`npm ci`, `npm run lint`, `npm run cover`, `npm run build`, then `node scripts/check-surface.mjs dist /providence/selector`), or `make ci-selector` from the repository root. It needs no Python, `uv`, `.providence`, MkDocs, Providence checkout or GitHub API. Fixtures in `fixtures/` are for development and tests only; the real-payload compatibility evidence lives in `compat/`.
+
 ## Output
 
 `npm run build` writes static files to `web/strategist/dist/` (`index.html`, `pragmatic/`, `epic/`, `fonts/`, `_assets/`, `robots.txt`). Serve that directory with any static server.

@@ -1,0 +1,474 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-10-09T01:12:25+00:00",
+  "items": [
+    {
+      "id": "M001",
+      "title": "Clean Architecture",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M002",
+      "title": "Test-Driven Development (TDD)",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M003",
+      "title": "Context Awareness & Task Caching",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M005",
+      "title": "Token Economy Enforcement",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M006",
+      "title": "RFC Process for Breaking Changes",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M007",
+      "title": "Telemetry Enforcement",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M008",
+      "title": "Audit Integrity",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M009",
+      "title": "OpenTelemetry Compliance",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M010",
+      "title": "Delivery Hygiene Enforcement",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M011",
+      "title": "English Language Standard",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M015",
+      "title": "Bidirectional Agent Handshake",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M016",
+      "title": "Guardrail Non-Regression",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M017",
+      "title": "Analysis Plugin Compliance",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M018",
+      "title": "Code Quality Baseline",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M019",
+      "title": "Governance Federation",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M020",
+      "title": "Governed Compact Logging",
+      "description": "No description available",
+      "category": "mandate",
+      "mandatory": true,
+      "tags": [
+        "mandate"
+      ],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "G01",
+      "title": "Dependency Direction \u2014 Python",
+      "description": "Domain and application layers must not import infrastructure adapters or framework code directly. Use import-linter to enforce layer boundaries.",
+      "category": "architecture",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G02",
+      "title": "Dependency Direction \u2014 Go",
+      "description": "Domain and application packages must not import infrastructure adapters or external clients. Use golangci-lint with depguard to enforce boundaries.",
+      "category": "architecture",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G03",
+      "title": "Dependency Direction \u2014 Java",
+      "description": "Domain and application classes must not depend on infrastructure adapters, frameworks, or persistence providers directly. Use ArchUnit to enforce layer boundaries in CI.",
+      "category": "architecture",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G04",
+      "title": "Dependency Direction \u2014 Node.js / TypeScript",
+      "description": "Domain and application modules must not import infrastructure adapters, database clients, or framework code directly. Use ESLint import rules and tsc strict mode to enforce boundaries.",
+      "category": "architecture",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G05",
+      "title": "Code Style \u2014 Python",
+      "description": "Python projects must use ruff for linting and formatting, mypy for type checking. No bare except, no Any-driven development, no import-time side effects. All public functions must be type-annotated. Use Protocol for contracts, typed models for structured data.",
+      "category": "code_quality",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G06",
+      "title": "Code Style \u2014 Go",
+      "description": "Go projects must use gofmt for formatting and golangci-lint for static analysis. All errors must be checked and wrapped with context. No panic as control flow for expected errors. No goroutine leaks \u2014 every goroutine must have a cancellation path via context.Context.",
+      "category": "code_quality",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G07",
+      "title": "Code Style \u2014 Java",
+      "description": "Java projects must use Checkstyle and PMD for static analysis. Business logic must not live in controllers. Domain classes must not depend on Spring annotations or JPA in the domain layer. Exceptions must be caught specifically and cause preserved.",
+      "category": "code_quality",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G08",
+      "title": "Code Style \u2014 TypeScript",
+      "description": "TypeScript projects must enable strict mode. No any escape hatches. Promises must be awaited or explicitly fire-and-forget with .catch. Business logic must not live in route handlers. External JSON must be validated before casting to domain types.",
+      "category": "code_quality",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G09",
+      "title": "Anti-Patterns \u2014 Python",
+      "description": "Python-specific anti-patterns that block merge: bare except, Any-driven development, monkeypatch architecture (compensating for poor dependency injection), import-time side effects. All errors must be caught specifically and re-raised with context using raise ... from exc.",
+      "category": "code_quality",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G10",
+      "title": "Anti-Patterns \u2014 Go",
+      "description": "Go-specific anti-patterns that block merge: ignored errors (using _ = err without documented reason), panic as control flow for expected application errors, goroutine leaks (goroutines started without cancellation path), package dumping grounds (internal/common or internal/utils with unrelated responsibilities).",
+      "category": "code_quality",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G11",
+      "title": "Anti-Patterns \u2014 Java",
+      "description": "Java-specific anti-patterns that block merge: business logic in controllers, framework-coupled domain (Spring or JPA annotations in domain classes), exception swallowing (empty catch blocks), over-engineered inheritance (deep hierarchy where composition would suffice).",
+      "category": "code_quality",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G12",
+      "title": "Anti-Patterns \u2014 TypeScript",
+      "description": "TypeScript-specific anti-patterns that block merge: any escape hatch (using any to silence compiler), floating promises (unhandled async failures), business logic in route handlers, unsafe type assertion (casting external JSON directly to domain types without runtime validation).",
+      "category": "code_quality",
+      "mandatory": true,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G13",
+      "title": "Performance \u2014 Python",
+      "description": "Python performance must be evidence-based: profile before optimizing. Avoid unnecessary object creation in hot loops. Use generators for large sequences. Avoid repeated network or database calls \u2014 batch where possible. Cache only when invalidation is explicit. Use async I/O for I/O-bound workloads. Add benchmarks before and after non-trivial optimizations.",
+      "category": "performance",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G14",
+      "title": "Performance \u2014 Go",
+      "description": "Go performance must be measured with pprof before optimizing. Avoid unnecessary allocations in hot paths. Use sync.Pool for frequently allocated short-lived objects. Avoid goroutine spawning per request without pool. Benchmark with go test -bench and -benchmem.",
+      "category": "performance",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G15",
+      "title": "Performance \u2014 Java",
+      "description": "Java performance must be measured with JMH or profiler before optimizing. Use StringBuilder for string concatenation in loops. Avoid eager loading of large associations. Use connection pooling. Avoid String.format in hot paths.",
+      "category": "performance",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G16",
+      "title": "Performance \u2014 Node.js / TypeScript",
+      "description": "Node.js performance must be measured with profiler or clinic.js before optimizing. Avoid blocking the event loop with CPU-intensive synchronous work. Batch database queries instead of N+1. Avoid re-parsing JSON or re-creating regex in hot paths. Use worker threads for CPU-bound tasks.",
+      "category": "performance",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G17",
+      "title": "Project Structure \u2014 Python",
+      "description": "Python projects must follow src/ layout with domain/, application/, adapters/, infrastructure/ subdirectories. Tests mirror src/ under tests/. Module names reflect business capability, not technical role \u2014 avoid utils/, helpers/, common/.",
+      "category": "architecture",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G18",
+      "title": "Project Structure \u2014 Go",
+      "description": "Go projects must use cmd/ for entry points, internal/ for private packages. Domain logic in internal/domain/. Adapters in internal/adapters/. Ports in internal/ports/. Package names reflect cohesive behavior \u2014 avoid internal/common and internal/utils. No circular imports.",
+      "category": "architecture",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G19",
+      "title": "Project Structure \u2014 Java",
+      "description": "Java projects must follow a package hierarchy with layers: domain, application, adapters, infrastructure. Domain package must not import any other package except domain itself. Use Maven or Gradle standard layout: src/main/java, src/test/java.",
+      "category": "architecture",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G20",
+      "title": "Project Structure \u2014 TypeScript",
+      "description": "TypeScript projects must use src/ layout with domain/, application/, adapters/, infrastructure/ directories and path aliases @domain/*, @application/*, @adapters/*. tsconfig.json must enable strict mode. No barrel files (index.ts re-exporting everything) \u2014 they hide boundaries and slow compilation.",
+      "category": "architecture",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G021",
+      "title": "Language Preference Context \u2014 Interaction Surfaces",
+      "description": "User-declared language preference from the wizard should guide chat and operational UI surfaces when those surfaces are not persisted as technical documentation or governance artifacts.",
+      "category": "communication",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G022",
+      "title": "Language Preference Context \u2014 Workspace-Local Notes",
+      "description": "Workspace-local notes and analysis artifacts may follow explicit user preference when the workspace classifies them as local documentation rather than canonical technical documentation.",
+      "category": "documentation",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G023",
+      "title": "Git Safety Practices",
+      "description": "Operational guidance for git command safety under M010 parallel-state assumption. Before any mutating action: run git status/diff first. Prefer direct file edits over git workflow commands. Do not stash, commit, cherry-pick, or push automatically \u2014 provide a summary and suggested commit message instead. Treat uncommitted work as potentially belonging to parallel agents or developers. Before any restricted command, state what it does, why it is needed, what state it may affect, and whether safer alternatives exist.",
+      "category": "governance",
+      "mandatory": false,
+      "tags": [
+        "guideline"
+      ],
+      "depends_on": [],
+      "item_type": "guideline"
+    }
+  ]
+}

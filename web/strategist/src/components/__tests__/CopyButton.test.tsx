@@ -74,4 +74,29 @@ describe('CopyButtons', () => {
     const toast = screen.getByText('✓ copied');
     expect(toast.getAttribute('aria-live')).toBe('polite');
   });
+
+  it('copies an empty command when the button has no data-command', async () => {
+    document.body.innerHTML = '<button class="copy-btn">copy</button>';
+    render(<CopyButtons />);
+    await act(async () => {
+      fireEvent.click(document.querySelector('.copy-btn') as HTMLElement);
+      await Promise.resolve();
+    });
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('');
+  });
+
+  it('ignores clipboard failures without showing a toast', async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error('clipboard unavailable'));
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      writable: true,
+      configurable: true,
+    });
+    render(<CopyButtons />);
+    await act(async () => {
+      fireEvent.click(document.querySelector('.copy-btn') as HTMLElement);
+      await Promise.resolve();
+    });
+    expect(screen.queryByText('âœ“ copied')).toBeNull();
+  });
 });

@@ -1,0 +1,96 @@
+name: Release Providence
+
+on:
+  push:
+    tags: ['providence-v*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: web/providence
+    env:
+      SURFACE_NAME: illusionist-providence-surface
+      # The release is compiled for its target consumer (the Providence page).
+      # /docs/ and /selector/ under that base belong to Providence, not to this surface.
+      ILLUSIONIST_SITE: https://sergiolacerda.github.io
+      ILLUSIONIST_BASE: /providence
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/providence/.nvmrc
+          cache: npm
+          cache-dependency-path: web/providence/package-lock.json
+      - name: Tag must match the package version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "providence-v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version providence-v${version}"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run cover
+      - run: npm run build
+      - name: Structural gate
+        run: node scripts/check-surface.mjs dist "$ILLUSIONIST_BASE"
+      - name: Package the static output
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-}.tar.gz"
+          mkdir -p "$GITHUB_WORKSPACE/release"
+          epoch="$(git log -1 --format=%ct)"
+          (cd dist && find . -mindepth 1 -printf '%P\n' | LC_ALL=C sort) > "$RUNNER_TEMP/entries.txt"
+          pack() {
+            tar -C dist --no-recursion -T "$RUNNER_TEMP/entries.txt" \
+              --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner -cf - | gzip -n > "$1"
+          }
+          pack "$GITHUB_WORKSPACE/release/${archive}"
+          pack "$RUNNER_TEMP/second.tar.gz"
+          if ! cmp -s "$GITHUB_WORKSPACE/release/${archive}" "$RUNNER_TEMP/second.tar.gz"; then
+            echo "::error::the archive is not deterministic"
+            exit 1
+          fi
+          if tar -tzf "$GITHUB_WORKSPACE/release/${archive}" | grep -qE '^(\./|/|web/)'; then
+            echo "::error::archive entries must sit at the archive root"
+            exit 1
+          fi
+          if tar -tzf "$GITHUB_WORKSPACE/release/${archive}" | grep -qE '^(docs|selector)(/|$)'; then
+            echo "::error::the archive must not contain docs/ or selector/"
+            exit 1
+          fi
+      - name: Consumer composition simulation
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-}.tar.gz"
+          root="$RUNNER_TEMP/site"
+          mkdir -p "$root/docs" "$root/selector"
+          echo mock-docs > "$root/docs/index.html"
+          echo mock-selector > "$root/selector/index.html"
+          (cd "$root" && sha256sum docs/index.html selector/index.html > "$RUNNER_TEMP/mock.sha256")
+          tar -xzf "$GITHUB_WORKSPACE/release/${archive}" -C "$root"
+          tar -xzf "$GITHUB_WORKSPACE/release/${archive}" -C "$root"
+          (cd "$root" && sha256sum -c "$RUNNER_TEMP/mock.sha256")
+          test -f "$root/index.html"
+          test -f "$root/detalhe-tecnico/index.html"
+          test -f "$root/instalacao/index.html"
+      - name: Write the checksum
+        working-directory: release
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-}.tar.gz"
+          sha256sum "${archive}" > "${archive}.sha256"
+          sha256sum -c "${archive}.sha256"
+      - name: Create the GitHub Release
+        working-directory: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-}.tar.gz"
+          gh release create "${GITHUB_REF_NAME}" \
+            "${archive}" "${archive}.sha256" \
+            --title "${GITHUB_REF_NAME}" --generate-notes --verify-tag

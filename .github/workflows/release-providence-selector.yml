@@ -1,0 +1,94 @@
+name: Release Providence Selector
+
+on:
+  push:
+    tags: ['providence-selector-v*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: web/providence-selector
+    env:
+      SURFACE_NAME: illusionist-providence-selector-surface
+      # The release is compiled for its target consumer (the Providence page).
+      # Governed data.json and the optional docs.index.json are injected by
+      # Providence at composition time and are never part of this surface.
+      ILLUSIONIST_SITE: https://sergiolacerda.github.io
+      ILLUSIONIST_BASE: /providence/selector
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/providence-selector/.nvmrc
+          cache: npm
+          cache-dependency-path: web/providence-selector/package-lock.json
+      - name: Tag must match the package version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "providence-selector-v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version providence-selector-v${version}"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run cover
+      - run: npm run build
+      - name: Structural gate
+        run: node scripts/check-surface.mjs dist "$ILLUSIONIST_BASE"
+      - name: Package the static output
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-selector-}.tar.gz"
+          mkdir -p "$GITHUB_WORKSPACE/release"
+          epoch="$(git log -1 --format=%ct)"
+          (cd dist && find . -mindepth 1 -printf '%P\n' | LC_ALL=C sort) > "$RUNNER_TEMP/entries.txt"
+          pack() {
+            tar -C dist --no-recursion -T "$RUNNER_TEMP/entries.txt" \
+              --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner -cf - | gzip -n > "$1"
+          }
+          pack "$GITHUB_WORKSPACE/release/${archive}"
+          pack "$RUNNER_TEMP/second.tar.gz"
+          if ! cmp -s "$GITHUB_WORKSPACE/release/${archive}" "$RUNNER_TEMP/second.tar.gz"; then
+            echo "::error::the archive is not deterministic"
+            exit 1
+          fi
+          if tar -tzf "$GITHUB_WORKSPACE/release/${archive}" | grep -qE '^(\./|/|web/)'; then
+            echo "::error::archive entries must sit at the archive root"
+            exit 1
+          fi
+          if tar -tzf "$GITHUB_WORKSPACE/release/${archive}" | grep -qE '(^|/)(data\.json|docs\.index\.json)$|^(fixtures|compat|\.providence|node_modules)(/|$)'; then
+            echo "::error::the archive must not contain governed data, fixtures or governance files"
+            exit 1
+          fi
+      - name: Consumer composition simulation
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-selector-}.tar.gz"
+          root="$RUNNER_TEMP/site/providence/selector"
+          mkdir -p "$root"
+          tar -xzf "$GITHUB_WORKSPACE/release/${archive}" -C "$root"
+          test -f "$root/index.html"
+          test ! -e "$root/data.json"
+          cp fixtures/data.json "$root/data.json"
+          cp fixtures/docs.index.json "$root/docs.index.json"
+          node -e "const d=require(process.argv[1]); if(!Array.isArray(d.items)||d.items.length===0) process.exit(1)" "$root/data.json"
+      - name: Write the checksum
+        working-directory: release
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-selector-}.tar.gz"
+          sha256sum "${archive}" > "${archive}.sha256"
+          sha256sum -c "${archive}.sha256"
+      - name: Create the GitHub Release
+        working-directory: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          archive="${SURFACE_NAME}-${GITHUB_REF_NAME#providence-selector-}.tar.gz"
+          gh release create "${GITHUB_REF_NAME}" \
+            "${archive}" "${archive}.sha256" \
+            --title "${GITHUB_REF_NAME}" --generate-notes --verify-tag

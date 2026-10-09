@@ -1,0 +1,2 @@
+# The compatibility payload is hashed in RECORD.json: keep its bytes identical on every platform.
+*.json text eol=lf

@@ -52,3 +52,55 @@ jobs:
           name: rgb-system-dist
           path: web/rgb-system/dist
           if-no-files-found: error
+
+  providence:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/providence
+    env:
+      ILLUSIONIST_SITE: https://sergiolacerda.github.io
+      ILLUSIONIST_BASE: /providence
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/providence/.nvmrc
+          cache: npm
+          cache-dependency-path: web/providence/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run cover
+      - run: npm run build
+      - run: node scripts/check-surface.mjs dist "$ILLUSIONIST_BASE"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: providence-dist
+          path: web/providence/dist
+          if-no-files-found: error
+
+  providence-selector:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/providence-selector
+    env:
+      ILLUSIONIST_SITE: https://sergiolacerda.github.io
+      ILLUSIONIST_BASE: /providence/selector
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/providence-selector/.nvmrc
+          cache: npm
+          cache-dependency-path: web/providence-selector/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run cover
+      - run: npm run build
+      - run: node scripts/check-surface.mjs dist "$ILLUSIONIST_BASE"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: providence-selector-dist
+          path: web/providence-selector/dist
+          if-no-files-found: error

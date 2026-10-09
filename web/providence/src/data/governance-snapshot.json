@@ -1,0 +1,12 @@
+{
+  "source": {
+    "repository": "SergioLacerda/providence",
+    "ref": "7bbfb67135eb0f2db2a212f65d5068b4e5090474",
+    "path": ".providence/metadata.json"
+  },
+  "mandates_count": 16,
+  "guidelines_count": 23,
+  "fingerprints": {
+    "combined": "3c92a54d04d29611"
+  }
+}

@@ -1,0 +1,29 @@
+---
+import '../styles/style.css';
+import { APP_MARKUP } from '../lib/markup';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SDD Selector</title>
+    <link rel="stylesheet" href="site-header.css" />
+    <!-- Prevents a flash of the wrong theme before the page boots. -->
+    <script is:inline>
+      (function () {
+        var saved = localStorage.getItem('sdd-theme');
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body>
+    <Fragment set:html={APP_MARKUP} />
+    <script is:inline src="site-header.js"></script>
+    <script>
+      import { startPage } from '../lib/page';
+      void startPage(window as unknown as Parameters<typeof startPage>[0]);
+    </script>
+  </body>
+</html>
