@@ -1,0 +1,39 @@
+{
+  "providence": {
+    "repository": "SergioLacerda/providence",
+    "ref": "origin/main",
+    "sha": "7bbfb67135eb0f2db2a212f65d5068b4e5090474",
+    "generator": "packages/interfaces/providence_wizard/src/providence_wizard/orchestration/wizard/selector_compiler.py",
+    "model": "packages/interfaces/providence_wizard/src/providence_wizard/orchestration/wizard/_selector_models.py",
+    "selectionValidator": "packages/interfaces/providence_wizard/src/providence_wizard/orchestration/wizard/selector_bridge.py",
+    "templates": "packages/interfaces/providence_wizard/src/providence_wizard/templates/selector/"
+  },
+  "payload": {
+    "file": "data.json",
+    "sha256": "c77076ba5c998b1a8469a6487e7c0bd48a238f5e97054b87b1d3c85bb0f1e7c6",
+    "bytes": 16996,
+    "items": 39,
+    "mandates": 16,
+    "guidelines": 23,
+    "categories": [
+      "architecture",
+      "code_quality",
+      "communication",
+      "documentation",
+      "governance",
+      "mandate",
+      "performance"
+    ],
+    "generatedAt": "2026-10-09T01:12:25+00:00",
+    "generationContext": "SelectorCompiler.build_payload() run with Python 3.14.8 on a git archive of the pinned commit extracted to a temporary directory (.providence, providence_wizard, docs/spec); nothing in the Providence checkout was modified"
+  },
+  "contract": {
+    "version": "1.0"
+  },
+  "selector": {
+    "package": "illusionist-providence-selector",
+    "version": "0.1.0"
+  },
+  "outcome": "pass",
+  "outcomeEvidence": "src/lib/compat.test.ts parses the payload at the presentation boundary, renders every item and resolves a selection; it also checks that this record matches the payload"
+}

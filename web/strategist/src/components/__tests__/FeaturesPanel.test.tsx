@@ -11,7 +11,7 @@ describe('FeaturesPanel', () => {
   it('renders eight supported features and starts with the first one', () => {
     render(<FeaturesPanel />);
     expect(document.querySelectorAll('.feature-tile')).toHaveLength(8);
-    expect(screen.getByRole('heading', { name: /Baú do tesouro/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /tesouro/i })).toBeTruthy();
   });
 
   it('persists the selected feature and falls back from an unknown id', () => {
@@ -32,5 +32,20 @@ describe('FeaturesPanel', () => {
     render(<FeaturesPanel />);
     await act(async () => window.dispatchEvent(new CustomEvent('strategist:feature', { detail: 'opportunity' })));
     expect(screen.getByRole('heading', { name: /Ataque de oportunidade/i })).toBeTruthy();
+  });
+
+  it('ignores unsupported feature events and renders a feature without flow', async () => {
+    render(<FeaturesPanel />);
+    await act(async () => window.dispatchEvent(new CustomEvent('strategist:feature', { detail: 'unknown' })));
+    expect(screen.getByRole('heading', { name: /tesouro/i })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: /Dojo/i }));
+    expect(screen.getByText('a definir')).toBeTruthy();
+  });
+
+  it('falls back to Portuguese when a language event is not English', async () => {
+    render(<FeaturesPanel />);
+    await act(async () => window.dispatchEvent(new CustomEvent('strategist:lang', { detail: 'fr' })));
+    expect(screen.getByRole('heading', { name: /tesouro/i })).toBeTruthy();
   });
 });

@@ -2,7 +2,7 @@
 
 ILUSIONISTA publishes its landing as a versioned, immutable static archive. A consumer depends on a release, never on `main`, the latest commit or the latest successful workflow run.
 
-This document describes the contract implemented by `.github/workflows/release.yml` (Strategist surface, tags `vX.Y.Z`) and `.github/workflows/release-rgb.yml` (RGB System surface, tags `rgb-vX.Y.Z`). Each surface is released independently: its own workflow, tag stream, version guard (tag against its own `package.json`), archive name and checksum. A tag of one stream never triggers the other workflow.
+This document describes the contract implemented by `.github/workflows/release.yml` (Strategist surface, tags `vX.Y.Z`) and `.github/workflows/release-rgb.yml` (RGB System surface, tags `rgb-vX.Y.Z`) `.github/workflows/release-providence.yml` (Providence surface, tags `providence-vX.Y.Z`) and `.github/workflows/release-providence-selector.yml` (Providence Selector, tags `providence-selector-vX.Y.Z`). Each surface is released independently: its own workflow, tag stream, version guard (tag against its own `package.json`), archive name and checksum. A tag of one stream never triggers the other workflow.
 
 ## Artifacts
 
@@ -29,6 +29,14 @@ The version in the file name is the release tag without the leading `v`, and it 
 ## RGB System release
 
 Tag `rgb-vX.Y.Z` (equal to `version` in `web/rgb-system/package.json`) publishes `illusionist-rgb-surface-vX.Y.Z.tar.gz` and its `.sha256`, built with `ILLUSIONIST_SITE=https://sergiolacerda.github.io` and `ILLUSIONIST_BASE=/rpg-system-rgb`. The archive layout rules, consumption steps and acceptance below apply with that prefix. It contains the presentation only: RGB adds its generated Library (`/library/`) and downloads (`/downloads/`) when it composes its site.
+
+## Providence release
+
+Tag `providence-vX.Y.Z` (equal to `version` in `web/providence/package.json`) publishes `illusionist-providence-surface-vX.Y.Z.tar.gz` and its `.sha256`, built with `ILLUSIONIST_SITE=https://sergiolacerda.github.io` and `ILLUSIONIST_BASE=/providence`. Before packaging the workflow runs the structural gate (required routes and assets, no `node_modules` or source, no `docs/` or `selector/`, every local reference under `/providence/`), packs the archive twice and requires identical bytes, and simulates a consumer: it extracts the archive twice into a root that already holds mock `docs/` and `selector/` and requires them to stay intact. The archive carries the presentation root only; Providence adds `docs/`, `selector/`, post-processing and deployment when it composes its site.
+
+## Providence Selector release
+
+Tag `providence-selector-vX.Y.Z` (equal to `version` in `web/providence-selector/package.json`) publishes `illusionist-providence-selector-surface-vX.Y.Z.tar.gz` and its `.sha256`, built with `ILLUSIONIST_SITE=https://sergiolacerda.github.io` and `ILLUSIONIST_BASE=/providence/selector`. The workflow runs the structural gate (which rejects `data.json`, `docs.index.json`, fixtures and governance files), packs twice and requires identical bytes, simulates the consumer by extracting the archive and injecting fixture data, and verifies the checksum. Providence supplies `data.json` (and optionally `docs.index.json`) beside `index.html` when it composes `/selector/`.
 
 ## Consuming a release
 

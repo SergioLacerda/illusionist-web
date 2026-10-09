@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-01-01T00:00:00+00:00",
+  "items": [
+    {
+      "id": "M001",
+      "title": "Clean Architecture",
+      "description": "Keep layers separated.",
+      "category": "architecture",
+      "mandatory": true,
+      "tags": ["architecture", "layers"],
+      "depends_on": [],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M002",
+      "title": "Test-Driven Development",
+      "description": "Write the test first.",
+      "category": "code_quality",
+      "mandatory": true,
+      "tags": ["tests"],
+      "depends_on": ["M001"],
+      "item_type": "mandate"
+    },
+    {
+      "id": "M003",
+      "title": "Telemetry",
+      "description": "Emit structured telemetry.",
+      "category": "performance",
+      "mandatory": false,
+      "tags": ["telemetry"],
+      "depends_on": ["M001", "M002"],
+      "item_type": "mandate"
+    },
+    {
+      "id": "G01",
+      "title": "Document decisions",
+      "description": "Record decisions in the docs.",
+      "category": "documentation",
+      "mandatory": false,
+      "tags": ["docs"],
+      "depends_on": [],
+      "item_type": "guideline"
+    },
+    {
+      "id": "G02",
+      "title": "Review governance",
+      "description": "Review governance quarterly.",
+      "category": "governance",
+      "mandatory": false,
+      "tags": ["governance"],
+      "depends_on": ["G01"],
+      "item_type": "guideline"
+    }
+  ]
+}
