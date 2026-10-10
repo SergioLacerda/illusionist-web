@@ -4,10 +4,10 @@ The landing lives in `web/strategist/` (Astro 7, React 19, TypeScript 6, Vitest 
 
 ## Requirements
 
-- Node `>=22.12.0` (declared in `web/strategist/package.json`); `web/strategist/.nvmrc` pins the current major (26), so `nvm use` in that folder selects it
+- Node `>=26 <27` (declared in `web/strategist/package.json`, equal to the `.nvmrc` major and to the Node version CI runs), so `nvm use` in that folder selects it
 - npm, using the committed `package-lock.json`
 - Policy: always the latest stable stack, no fallbacks or backward-compatibility shims. The one exception is TypeScript, held at the newest version `astro check` supports (6.x); TypeScript 7.0 is rejected by `astro check`, and 7.1+ is reachable only through `@astrojs/ts-content-mapper`
-- On machines with several Node versions, make sure `node -v` reports `>=22.12.0` before `npm ci`; an old Node makes `npm ci` fail after clearing `node_modules/`
+- On machines with several Node versions, make sure `node -v` reports a 26.x version before `npm ci`; an old Node makes `npm ci` fail after clearing `node_modules/`
 
 ## Commands
 
@@ -34,6 +34,18 @@ The same workflow is available from the repository root through `make/web.mk`:
 | Production build | `make build-site` |
 | Local preview | `make preview-site` |
 | Full CI-style web check | `make ci-web` |
+
+## All surfaces
+
+From the repository root, after installing every surface (`make install-web install-rgb install-providence install-selector`), the global targets cover the four surfaces listed in [architecture/global-quality-gates.md](architecture/global-quality-gates.md):
+
+| Purpose | Command |
+|---------|---------|
+| Registry parity (Make, CI, docs, README) | `make check-surfaces` |
+| Static quality gate (lint, coverage, audit) | `make quality` |
+| Production build of every surface (no `npm ci`) | `make build-all` |
+| Structural gates (Providence, Providence Selector) | `make gates` |
+| Everything CI runs: quality, build and gates | `make ci` |
 
 ## RGB System surface
 

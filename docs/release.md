@@ -4,6 +4,17 @@ ILUSIONISTA publishes its landing as a versioned, immutable static archive. A co
 
 This document describes the contract implemented by `.github/workflows/release.yml` (Strategist surface, tags `vX.Y.Z`) and `.github/workflows/release-rgb.yml` (RGB System surface, tags `rgb-vX.Y.Z`) `.github/workflows/release-providence.yml` (Providence surface, tags `providence-vX.Y.Z`) and `.github/workflows/release-providence-selector.yml` (Providence Selector, tags `providence-selector-vX.Y.Z`). Each surface is released independently: its own workflow, tag stream, version guard (tag against its own `package.json`), archive name and checksum. A tag of one stream never triggers the other workflow.
 
+## Pipeline and permissions
+
+Every release workflow has two jobs:
+
+| Job | Permissions | What it does |
+|-----|-------------|--------------|
+| `build` | `contents: read` (workflow default) | Checks out the tag with full history and without persisting the token, verifies that the tagged commit is an ancestor of `origin/main`, verifies the tag against `package.json`, runs `npm ci`, the surface's checks and build, packages the archive, writes the checksum and uploads both files as the `release-assets` workflow artifact |
+| `publish` | `contents: write` | Needs `build`. Downloads `release-assets`, requires exactly one archive and its checksum, re-verifies the checksum and creates the GitHub Release with `gh release create --verify-tag` |
+
+Dependency installation, lifecycle scripts and every build step run only in `build`, which cannot write to the repository. `publish` checks out nothing and executes no repository or dependency code. A tag whose commit is not reachable from `main` fails in `build` before `npm ci`, so nothing is uploaded or published.
+
 ## Artifacts
 
 Each release `vX.Y.Z` (SemVer; `v0.x.y` while the contract is being discovered) carries two files:
@@ -66,9 +77,9 @@ A release is accepted on properties of the artifact: the checksum verifies, the 
 
 ## Cutting a release (maintainer)
 
-1. Set `version` in `web/strategist/package.json` to the new version and merge it.
-2. Push the tag `vX.Y.Z` that equals that version. The release workflow fails when they differ.
-3. The workflow runs the type check, the tests and the build, then packages the output, writes the checksum and creates the GitHub Release with both files attached. Nothing is published if an earlier step fails.
+1. Set `version` in `web/strategist/package.json` to the new version and merge it into `main` (through `develop`).
+2. Push the tag `vX.Y.Z` that equals that version, on a commit that is on `main`. The release workflow fails when the commit is not an ancestor of `main` or when the tag and the version differ. The other streams use their own tag prefixes and `package.json`.
+3. The `build` job runs the type check, the tests and the build, then packages the output and writes the checksum; the `publish` job verifies the checksum again and creates the GitHub Release with both files attached. Nothing is published if an earlier step fails.
 4. Never move or reuse a tag. A bad release is superseded by a new patch version.
 
 ## Not covered
