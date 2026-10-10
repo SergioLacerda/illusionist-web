@@ -4,6 +4,9 @@ on:
   push:
     branches: [main, develop]
   pull_request:
+  schedule:
+    # Weekly run so new advisories surface on idle branches (audit job below).
+    - cron: '17 6 * * 1'
 
 permissions:
   contents: read
@@ -104,3 +107,33 @@ jobs:
           name: providence-selector-dist
           path: web/providence-selector/dist
           if-no-files-found: error
+
+  # Dependency audit: one matrix entry per surface, each under its own .nvmrc.
+  # It reads the lockfile only (no install, so no lifecycle scripts run) and fails
+  # on any advisory at or above AUDIT_LEVEL, including a registry error. Keep the
+  # matrix in step with web/*; scripts/check-surfaces.mjs enforces it.
+  audit:
+    name: audit (${{ matrix.surface }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        surface: [strategist, rgb-system, providence, providence-selector]
+    defaults:
+      run:
+        working-directory: web/${{ matrix.surface }}
+    env:
+      AUDIT_LEVEL: high
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/${{ matrix.surface }}/.nvmrc
+      - run: npm audit --audit-level="$AUDIT_LEVEL"
+
+  # Registry parity: make, CI, docs and README must list the same surfaces.
+  surface-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: node scripts/check-surfaces.mjs

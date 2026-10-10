@@ -15,7 +15,11 @@ Builds, tests and packages static web surfaces for products. Four real surfaces 
 | `docs/build.md` | Install, check, test, build and preview commands |
 | `docs/architecture/rgb-migration-report.md` | RGB migration report (baseline, classification, decisions) |
 | `docs/architecture/rgb-composition-design.md` | How RGB composes its site from the RGB surface archive (design only) |
-| `.github/workflows/ci.yml` | CI: one job per surface (`npm ci`, lint, tests, build on the Node pinned in its `.nvmrc`) |
+| `.github/workflows/ci.yml` | CI: one job per surface (`npm ci`, lint, tests, build on the Node pinned in its `.nvmrc`), a dependency `audit` matrix and a `surface-parity` check |
+| `.github/workflows/codeql.yml` | CodeQL static analysis (JavaScript/TypeScript and GitHub Actions) |
+| `.github/workflows/dependency-review.yml` | Dependency review on pull requests |
+| `.github/dependabot.yml` | Weekly dependency and GitHub Actions updates, one stream per surface, targeting `develop` |
+| `scripts/check-surfaces.mjs` | Registry parity check behind `make check-surfaces` (Make, CI, docs and README must list the same surfaces) |
 | `.github/workflows/release.yml` | Strategist release, tags `vX.Y.Z` |
 | `.github/workflows/release-rgb.yml` | RGB System release, tags `rgb-vX.Y.Z` |
 | `.github/workflows/release-providence.yml` | Providence release, tags `providence-vX.Y.Z` |
@@ -24,7 +28,7 @@ Builds, tests and packages static web surfaces for products. Four real surfaces 
 
 ## Quick start
 
-Requires Node 26 (`.nvmrc` of each surface; the Strategist minimum is 22.12, RGB System declares `>=26 <27`).
+Requires Node 26. Every surface declares `engines.node` as `>=26 <27`, which matches its `.nvmrc` and the only Node version CI runs. The released archives are plain static files and need no Node runtime; the Node requirement applies to building and testing only.
 
 ```bash
 cd web/strategist

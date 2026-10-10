@@ -8,10 +8,9 @@ permissions:
   contents: read
 
 jobs:
-  release:
+  # Builds, tests and packages with read-only permissions.
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     defaults:
       run:
         working-directory: web/strategist
@@ -22,6 +21,18 @@ jobs:
       ILLUSIONIST_BASE: /strategist-skill
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history for the lineage check below; the token is not left in
+          # .git/config while dependency scripts run.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Tagged commit must be on main
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "${GITHUB_SHA}" origin/main; then
+            echo "::error::tagged commit ${GITHUB_SHA} is not an ancestor of origin/main; releases are cut from main"
+            exit 1
+          fi
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: web/strategist/.nvmrc
@@ -57,12 +68,42 @@ jobs:
           archive="${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz"
           sha256sum "${archive}" > "${archive}.sha256"
           sha256sum -c "${archive}.sha256"
+      - name: Upload the release assets
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-assets
+          path: release/
+          if-no-files-found: error
+          retention-days: 7
+
+  # Only this job holds contents: write, and it runs no repository or dependency
+  # code: it re-verifies the checksum of the artifact built above and publishes it.
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: release-assets
+          path: release
+      - name: Verify the checksum
+        working-directory: release
+        run: |
+          set -eu
+          [ "$(ls -1 | wc -l)" -eq 2 ] || { echo "::error::expected exactly one archive and one checksum"; ls -l; exit 1; }
+          archive="$(ls -1 *.tar.gz)"
+          [ -f "${archive}.sha256" ] || { echo "::error::missing ${archive}.sha256"; exit 1; }
+          sha256sum -c "${archive}.sha256"
       - name: Create the GitHub Release
         working-directory: release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -eu
+          archive="$(ls -1 *.tar.gz)"
           gh release create "${GITHUB_REF_NAME}" \
-            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz" \
-            "${SURFACE_NAME}-${GITHUB_REF_NAME}.tar.gz.sha256" \
+            "${archive}" "${archive}.sha256" \
             --title "${GITHUB_REF_NAME}" --generate-notes --verify-tag
