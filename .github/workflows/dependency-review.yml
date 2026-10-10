@@ -14,4 +14,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
+          # Blocking: a dependency change that introduces a known advisory of high
+          # severity or above.
           fail-on-severity: high
+          # Advisory only: show the OpenSSF Scorecard of each changed dependency and
+          # warn below 3. A low score describes the upstream project's practices (no
+          # branch protection, no security policy, ...), not a vulnerability, and
+          # never fails this job. Transitive packages we cannot drop (for example
+          # http-cache-semantics through astro) are expected to appear here.
+          show-openssf-scorecard: true
+          warn-on-openssf-scorecard-level: 3
